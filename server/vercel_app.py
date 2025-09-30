@@ -1,18 +1,15 @@
 import os
-from .wsgi import *
-
-# This file contains the WSGI configuration required to serve up your
-# web application at Vercel.
-# It works by setting the variable 'application' to a WSGI handler of some
-# description.
-
-# To use this feature, we need to set this application variable to our WSGI handler.
-# The default Django application is the 'application' variable in your project's wsgi.py
-
-# Path to Django application
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.append(os.path.join(os.path.dirname(__file__), '../..'))
+
+# Add the project directory to Python path
+sys.path.insert(0, os.path.dirname(__file__))
+
+# Set Django settings
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'djangoproj.settings')
+
+# Import Django WSGI application
+import django
+django.setup()
 
 from djangoproj.wsgi import application
 

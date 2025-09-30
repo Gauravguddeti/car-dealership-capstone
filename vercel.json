@@ -2,15 +2,11 @@
   "version": 2,
   "builds": [
     {
-      "src": "server/djangoproj/wsgi.py",
+      "src": "server/vercel_app.py",
       "use": "@vercel/python",
-      "config": { "maxLambdaSize": "15mb", "runtime": "python3.9" }
-    },
-    {
-      "src": "build_files.sh",
-      "use": "@vercel/static-build",
-      "config": {
-        "distDir": "staticfiles_build"
+      "config": { 
+        "maxLambdaSize": "15mb", 
+        "runtime": "python3.9"
       }
     }
   ],
@@ -21,7 +17,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "server/djangoproj/wsgi.py"
+      "dest": "server/vercel_app.py"
     }
   ]
 }

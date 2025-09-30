@@ -4,11 +4,12 @@
 echo "Building the project..."
 
 # Install Python dependencies
-pip install -r requirements.txt
+python3 -m pip install -r requirements.txt
 
 # Make migrations
-python server/manage.py makemigrations --noinput
-python server/manage.py migrate --noinput
+cd server
+python3 manage.py makemigrations --noinput
+python3 manage.py migrate --noinput
 
 # Collect static files
-python server/manage.py collectstatic --noinput --clear
+python3 manage.py collectstatic --noinput --clear
