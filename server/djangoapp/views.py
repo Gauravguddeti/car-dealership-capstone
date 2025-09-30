@@ -80,21 +80,24 @@ def get_dealer_reviews(dealer_id):
         else:
             return []
     except:
-        # Return dummy data if API is not available
-        return [
-            {
-                "id": 1,
-                "name": "John Doe",
-                "dealership": dealer_id,
-                "review": "Great service and friendly staff. Highly recommend!",
-                "purchase": True,
-                "purchase_date": "2023-10-15",
-                "car_make": "Toyota",
-                "car_model": "Camry",
-                "car_year": 2023,
-                "sentiment": "positive"
-            }
-        ]
+        # Return actual database reviews if API is not available
+        from .models import DealerReview
+        reviews = DealerReview.objects.filter(dealership=dealer_id)
+        review_list = []
+        for review in reviews:
+            review_list.append({
+                "id": review.id,
+                "name": review.name,
+                "dealership": review.dealership,
+                "review": review.review,
+                "purchase": review.purchase,
+                "purchase_date": review.purchase_date.strftime('%Y-%m-%d') if review.purchase_date else '',
+                "car_make": review.car_make,
+                "car_model": review.car_model,
+                "car_year": review.car_year,
+                "sentiment": review.sentiment
+            })
+        return review_list
 
 
 def analyze_sentiment(text):
