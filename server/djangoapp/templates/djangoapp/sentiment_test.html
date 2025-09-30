@@ -1,0 +1,141 @@
+{% extends 'djangoapp/base.html' %}
+
+{% block title %}Sentiment Analyzer Test{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-info text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-brain"></i> Sentiment Analyzer Test
+                    </h2>
+                </div>
+                <div class="card-body p-5">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Test the Sentiment Analysis</strong><br>
+                        Enter some text below to see how our sentiment analyzer works!
+                    </div>
+
+                    <form id="sentimentForm">
+                        <div class="mb-4">
+                            <label for="text" class="form-label">
+                                <i class="fas fa-comment"></i> Enter Text to Analyze
+                            </label>
+                            <textarea class="form-control" id="text" name="text" rows="4" 
+                                      placeholder="Enter any text here to analyze its sentiment..." required></textarea>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-search"></i> Analyze Sentiment
+                        </button>
+                    </form>
+
+                    <div id="result" class="mt-4" style="display: none;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5><i class="fas fa-chart-bar"></i> Analysis Result</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="mb-3">
+                                    <strong>Original Text:</strong>
+                                    <p id="originalText" class="text-muted mt-2"></p>
+                                </div>
+                                <div>
+                                    <strong>Sentiment:</strong>
+                                    <span id="sentimentResult" class="ms-2"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mt-5">
+                        <h4>Sample Texts to Try</h4>
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-success">Positive Example</h6>
+                                        <p class="card-text small">"Great service! The staff was amazing and very helpful. I had a wonderful experience."</p>
+                                        <button class="btn btn-sm btn-outline-success" onclick="fillText(this.previousElementSibling.textContent)">Try This</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-secondary">Neutral Example</h6>
+                                        <p class="card-text small">"The service was okay. Nothing special but not bad either. Average experience overall."</p>
+                                        <button class="btn btn-sm btn-outline-secondary" onclick="fillText(this.previousElementSibling.textContent)">Try This</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <div class="card">
+                                    <div class="card-body">
+                                        <h6 class="card-title text-danger">Negative Example</h6>
+                                        <p class="card-text small">"Terrible experience. The staff was rude and unhelpful. I would not recommend this place."</p>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="fillText(this.previousElementSibling.textContent)">Try This</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function fillText(text) {
+    document.getElementById('text').value = text.replace(/"/g, '');
+}
+
+document.getElementById('sentimentForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const text = document.getElementById('text').value;
+    const resultDiv = document.getElementById('result');
+    const originalTextDiv = document.getElementById('originalText');
+    const sentimentResultDiv = document.getElementById('sentimentResult');
+    
+    try {
+        const response = await fetch('{% url "djangoapp:sentiment_analyzer_api" %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: JSON.stringify({ text: text })
+        });
+        
+        const data = await response.json();
+        
+        originalTextDiv.textContent = data.text;
+        
+        let badgeClass = 'secondary';
+        let icon = 'meh';
+        
+        if (data.sentiment === 'positive') {
+            badgeClass = 'success';
+            icon = 'smile';
+        } else if (data.sentiment === 'negative') {
+            badgeClass = 'danger';
+            icon = 'frown';
+        }
+        
+        sentimentResultDiv.innerHTML = `<span class="badge bg-${badgeClass}"><i class="fas fa-${icon}"></i> ${data.sentiment.toUpperCase()}</span>`;
+        
+        resultDiv.style.display = 'block';
+        resultDiv.scrollIntoView({ behavior: 'smooth' });
+        
+    } catch (error) {
+        console.error('Error:', error);
+        alert('Error analyzing sentiment. Please try again.');
+    }
+});
+</script>
+{% endblock %}

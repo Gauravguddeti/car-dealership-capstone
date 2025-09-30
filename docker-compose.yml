@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./server:/app/server
+    environment:
+      - DEBUG=1
+    depends_on:
+      - dealership-api
+      - sentiment-api
+
+  dealership-api:
+    build: ./microservices/dealership
+    ports:
+      - "3030:3030"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./microservices/dealership:/app
+
+  sentiment-api:
+    build: ./microservices/sentiment
+    ports:
+      - "5050:5050"
+    environment:
+      - NODE_ENV=development
+    volumes:
+      - ./microservices/sentiment:/app

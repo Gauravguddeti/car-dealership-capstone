@@ -1,0 +1,220 @@
+{% extends 'djangoapp/base.html' %}
+
+{% block title %}{{ dealer.full_name }} - Car Dealership{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-primary text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-store"></i> {{ dealer.full_name }}
+                    </h2>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-info-circle"></i> Dealer Information</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <strong><i class="fas fa-map-marker-alt"></i> Address:</strong><br>
+                                    {{ dealer.address }}<br>
+                                    {{ dealer.city }}, {{ dealer.state }} {{ dealer.zip }}
+                                </li>
+                                <li class="mb-2">
+                                    <strong><i class="fas fa-tag"></i> Short Name:</strong> {{ dealer.short_name }}
+                                </li>
+                                <li class="mb-2">
+                                    <strong><i class="fas fa-map"></i> State:</strong> {{ dealer.state }} ({{ dealer.st }})
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h5><i class="fas fa-map"></i> Location Details</h5>
+                            <ul class="list-unstyled">
+                                <li class="mb-2">
+                                    <strong><i class="fas fa-compass"></i> Coordinates:</strong><br>
+                                    Lat: {{ dealer.lat }}, Long: {{ dealer.long }}
+                                </li>
+                                <li class="mb-2">
+                                    <strong><i class="fas fa-hashtag"></i> Dealer ID:</strong> {{ dealer.id }}
+                                </li>
+                            </ul>
+                            
+                            {% if user.is_authenticated %}
+                                <div class="mt-4">
+                                    <a href="{% url 'djangoapp:add_review' dealer.id %}" class="btn btn-success btn-lg">
+                                        <i class="fas fa-plus"></i> Add Review
+                                    </a>
+                                </div>
+                            {% else %}
+                                <div class="mt-4">
+                                    <p class="text-muted">
+                                        <a href="{% url 'djangoapp:login' %}">Login</a> to add a review
+                                    </p>
+                                </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h3 class="mb-0">
+                        <i class="fas fa-star"></i> Customer Reviews
+                        <span class="badge bg-primary">{{ reviews|length }}</span>
+                    </h3>
+                </div>
+                <div class="card-body">
+                    {% if reviews %}
+                        {% for review in reviews %}
+                            <div class="review-item mb-4 pb-3 border-bottom">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <div>
+                                        <h5 class="mb-1">{{ review.name }}</h5>
+                                        <div class="d-flex align-items-center">
+                                            {% if review.sentiment == 'positive' %}
+                                                <span class="badge bg-success me-2">
+                                                    <i class="fas fa-smile"></i> Positive
+                                                </span>
+                                            {% elif review.sentiment == 'negative' %}
+                                                <span class="badge bg-danger me-2">
+                                                    <i class="fas fa-frown"></i> Negative
+                                                </span>
+                                            {% else %}
+                                                <span class="badge bg-secondary me-2">
+                                                    <i class="fas fa-meh"></i> Neutral
+                                                </span>
+                                            {% endif %}
+                                            
+                                            {% if review.purchase %}
+                                                <span class="badge bg-info">
+                                                    <i class="fas fa-check"></i> Verified Purchase
+                                                </span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">{{ review.purchase_date }}</small>
+                                </div>
+                                
+                                <p class="mb-2">{{ review.review }}</p>
+                                
+                                {% if review.car_make and review.car_model %}
+                                    <div class="car-info">
+                                        <small class="text-muted">
+                                            <i class="fas fa-car"></i> 
+                                            {{ review.car_make }} {{ review.car_model }} {{ review.car_year }}
+                                        </small>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="text-center py-5">
+                            <i class="fas fa-comment-slash fa-3x text-muted mb-3"></i>
+                            <h4>No Reviews Yet</h4>
+                            <p class="text-muted">Be the first to review this dealership!</p>
+                            {% if user.is_authenticated %}
+                                <a href="{% url 'djangoapp:add_review' dealer.id %}" class="btn btn-primary">
+                                    <i class="fas fa-plus"></i> Add First Review
+                                </a>
+                            {% else %}
+                                <a href="{% url 'djangoapp:login' %}" class="btn btn-primary">
+                                    <i class="fas fa-sign-in-alt"></i> Login to Review
+                                </a>
+                            {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5><i class="fas fa-chart-bar"></i> Review Summary</h5>
+                </div>
+                <div class="card-body">
+                    {% if reviews %}
+                        <div class="mb-3">
+                            <strong>Total Reviews:</strong> {{ reviews|length }}
+                        </div>
+                        
+                        {% with positive_count=0 negative_count=0 neutral_count=0 %}
+                            {% for review in reviews %}
+                                {% if review.sentiment == 'positive' %}
+                                    {% with positive_count=positive_count|add:1 %}{% endwith %}
+                                {% elif review.sentiment == 'negative' %}
+                                    {% with negative_count=negative_count|add:1 %}{% endwith %}
+                                {% else %}
+                                    {% with neutral_count=neutral_count|add:1 %}{% endwith %}
+                                {% endif %}
+                            {% endfor %}
+                        {% endwith %}
+                        
+                        <div class="sentiment-bars">
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-success">Positive</span>
+                                    <span>{% widthratio reviews|length reviews|length 60 %}%</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-success" style="width: 60%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-secondary">Neutral</span>
+                                    <span>30%</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-secondary" style="width: 30%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <span class="text-danger">Negative</span>
+                                    <span>10%</span>
+                                </div>
+                                <div class="progress" style="height: 8px;">
+                                    <div class="progress-bar bg-danger" style="width: 10%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <p class="text-muted">No reviews available yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-directions"></i> Quick Actions</h5>
+                </div>
+                <div class="card-body">
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'djangoapp:index' %}" class="btn btn-outline-primary">
+                            <i class="fas fa-arrow-left"></i> Back to Dealers
+                        </a>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'djangoapp:add_review' dealer.id %}" class="btn btn-success">
+                                <i class="fas fa-plus"></i> Add Review
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .review-item:last-child {
+        border-bottom: none !important;
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+    }
+</style>
+{% endblock %}

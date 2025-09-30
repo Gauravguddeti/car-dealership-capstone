@@ -1,0 +1,102 @@
+{% extends 'djangoapp/base.html' %}
+
+{% block title %}About Us - Car Dealership{% endblock %}
+
+{% block content %}
+<div class="hero-section">
+    <div class="container text-center">
+        <h1 class="display-4 mb-4">About Us</h1>
+        <p class="lead">Learn more about our mission and values</p>
+    </div>
+</div>
+
+<div class="container my-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="card">
+                <div class="card-body p-5">
+                    <h2 class="text-center mb-4">Welcome to CarDealership</h2>
+                    
+                    <p class="lead text-center mb-5">
+                        Your trusted partner in finding the perfect vehicle for your needs.
+                    </p>
+
+                    <div class="row mb-5">
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fas fa-search fa-2x"></i>
+                            </div>
+                            <h4 class="mt-3">Find Dealers</h4>
+                            <p>Discover trusted dealerships in your area with our comprehensive directory.</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="bg-success text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fas fa-star fa-2x"></i>
+                            </div>
+                            <h4 class="mt-3">Read Reviews</h4>
+                            <p>Make informed decisions with authentic reviews from real customers.</p>
+                        </div>
+                        <div class="col-md-4 text-center mb-4">
+                            <div class="bg-info text-white rounded-circle d-inline-flex align-items-center justify-content-center" style="width: 80px; height: 80px;">
+                                <i class="fas fa-handshake fa-2x"></i>
+                            </div>
+                            <h4 class="mt-3">Connect</h4>
+                            <p>Connect with dealerships and share your own experiences.</p>
+                        </div>
+                    </div>
+
+                    <div class="mb-5">
+                        <h3>Our Story</h3>
+                        <p>
+                            Founded in 2024, CarDealership has been connecting car buyers with trusted dealers across the nation. 
+                            We understand that buying a car is one of the most important decisions you'll make, and we're here to 
+                            make that process as smooth and informed as possible.
+                        </p>
+                        <p>
+                            Our platform brings together dealerships from coast to coast, providing you with comprehensive information, 
+                            authentic reviews, and the tools you need to find your perfect vehicle.
+                        </p>
+                    </div>
+
+                    <div class="mb-5">
+                        <h3>What We Offer</h3>
+                        <ul class="list-unstyled">
+                            <li class="mb-3">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <strong>Comprehensive Dealer Directory:</strong> Find dealerships in your area with detailed information
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <strong>Authentic Reviews:</strong> Read and write genuine reviews from real customers
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <strong>Smart Filtering:</strong> Filter dealerships by location and other criteria
+                            </li>
+                            <li class="mb-3">
+                                <i class="fas fa-check-circle text-success me-2"></i>
+                                <strong>User-Friendly Interface:</strong> Easy-to-use platform designed with you in mind
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="text-center">
+                        <h3>Ready to Get Started?</h3>
+                        <p class="mb-4">Join thousands of satisfied customers who have found their perfect car through our platform.</p>
+                        <div class="d-flex gap-3 justify-content-center">
+                            <a href="{% url 'djangoapp:index' %}" class="btn btn-primary btn-lg">
+                                <i class="fas fa-search"></i> Browse Dealers
+                            </a>
+                            {% if not user.is_authenticated %}
+                                <a href="{% url 'djangoapp:signup' %}" class="btn btn-outline-primary btn-lg">
+                                    <i class="fas fa-user-plus"></i> Sign Up
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

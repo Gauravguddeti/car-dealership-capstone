@@ -1,0 +1,170 @@
+{% extends 'djangoapp/base.html' %}
+
+{% block title %}Add Review - {{ dealer.full_name }}{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h2 class="mb-0">
+                        <i class="fas fa-star"></i> Add Review for {{ dealer.full_name }}
+                    </h2>
+                </div>
+                <div class="card-body p-5">
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Share Your Experience</strong><br>
+                        Help other customers by sharing your honest experience with this dealership.
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.name.id_for_label }}" class="form-label">
+                                    <i class="fas fa-user"></i> Your Name <span class="text-danger">*</span>
+                                </label>
+                                {{ form.name }}
+                                {% if form.name.errors %}
+                                    <div class="text-danger small">{{ form.name.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ form.purchase_date.id_for_label }}" class="form-label">
+                                    <i class="fas fa-calendar"></i> Purchase Date <span class="text-danger">*</span>
+                                </label>
+                                {{ form.purchase_date }}
+                                {% if form.purchase_date.errors %}
+                                    <div class="text-danger small">{{ form.purchase_date.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">
+                                <i class="fas fa-shopping-cart"></i> Did you purchase a car? <span class="text-danger">*</span>
+                            </label>
+                            <div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="purchase" id="purchase_yes" value="True" required>
+                                    <label class="form-check-label" for="purchase_yes">
+                                        <i class="fas fa-check text-success"></i> Yes
+                                    </label>
+                                </div>
+                                <div class="form-check form-check-inline">
+                                    <input class="form-check-input" type="radio" name="purchase" id="purchase_no" value="False" required>
+                                    <label class="form-check-label" for="purchase_no">
+                                        <i class="fas fa-times text-danger"></i> No
+                                    </label>
+                                </div>
+                            </div>
+                            {% if form.purchase.errors %}
+                                <div class="text-danger small">{{ form.purchase.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.car_make.id_for_label }}" class="form-label">
+                                    <i class="fas fa-car"></i> Car Make <span class="text-danger">*</span>
+                                </label>
+                                {{ form.car_make }}
+                                {% if form.car_make.errors %}
+                                    <div class="text-danger small">{{ form.car_make.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.car_model.id_for_label }}" class="form-label">
+                                    <i class="fas fa-car-side"></i> Car Model <span class="text-danger">*</span>
+                                </label>
+                                {{ form.car_model }}
+                                {% if form.car_model.errors %}
+                                    <div class="text-danger small">{{ form.car_model.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="{{ form.car_year.id_for_label }}" class="form-label">
+                                    <i class="fas fa-calendar-alt"></i> Car Year <span class="text-danger">*</span>
+                                </label>
+                                {{ form.car_year }}
+                                {% if form.car_year.errors %}
+                                    <div class="text-danger small">{{ form.car_year.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="{{ form.review.id_for_label }}" class="form-label">
+                                <i class="fas fa-comment"></i> Your Review <span class="text-danger">*</span>
+                            </label>
+                            {{ form.review }}
+                            <div class="form-text">
+                                Share your detailed experience with this dealership. What went well? What could be improved?
+                            </div>
+                            {% if form.review.errors %}
+                                <div class="text-danger small">{{ form.review.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+
+                        <div class="d-flex gap-3">
+                            <button type="submit" class="btn btn-success btn-lg">
+                                <i class="fas fa-paper-plane"></i> Submit Review
+                            </button>
+                            <a href="{% url 'djangoapp:dealer_details' dealer.id %}" class="btn btn-outline-secondary btn-lg">
+                                <i class="fas fa-times"></i> Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-lightbulb"></i> Review Tips</h5>
+                </div>
+                <div class="card-body">
+                    <ul class="list-unstyled">
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> 
+                            <strong>Be specific:</strong> Mention staff names, specific services, or details about your experience
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> 
+                            <strong>Be honest:</strong> Share both positive and negative aspects of your experience
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> 
+                            <strong>Be helpful:</strong> Focus on information that would help other customers
+                        </li>
+                        <li class="mb-2">
+                            <i class="fas fa-check text-success"></i> 
+                            <strong>Be respectful:</strong> Keep your language professional and constructive
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-control, .form-select {
+        border-radius: 8px;
+        border: 1px solid #ddd;
+        padding: 12px;
+    }
+    .form-control:focus, .form-select:focus {
+        border-color: #28a745;
+        box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+    }
+    textarea.form-control {
+        min-height: 120px;
+    }
+</style>
+{% endblock %}
